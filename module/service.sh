@@ -18,12 +18,11 @@ modid="my_region"
 
 # we mimic vendor mounts like, my_bigball
 mkdir $basefolder/$modid
+mount --bind "$TMPFS_DIR" "$basefolder/$modid"
 
 cd $TMPFS_DIR
 
 for i in $(ls -d */*/); do
-	mkdir -p $basefolder/$modid/$i
-	mount --bind $TMPFS_DIR/$i $basefolder/$modid/$i
 	mount -t overlay -o "lowerdir=$basefolder/$modid/$i:/$i" overlay /$i
 done
 
