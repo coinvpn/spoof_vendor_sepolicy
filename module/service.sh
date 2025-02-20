@@ -7,11 +7,13 @@ until [ "$(getprop sys.boot_completed)" = "1" ]; do
     sleep 1
 done
 
-# require mountify
+# mountify
 if [ -f /data/adb/modules/mountify/config.sh ]; then
 	. /data/adb/modules/mountify/config.sh
-else
-	exit 1
+fi
+# if standalone
+if [ -f $MODDIR/config.sh ]; then
+	. $MODDIR/config.sh
 fi
 
 if [ -z $FAKE_MOUNT_NAME ]; then
