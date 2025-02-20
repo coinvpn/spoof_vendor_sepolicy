@@ -44,10 +44,19 @@ mountify_sysreq() {
 # require mountify compat
 if [ ! -f /data/adb/modules/mountify/config.sh ] && [ ! -f /data/adb/modules_update/mountify/config.sh ]; then
 	mountify_sysreq
+	echo "[+] installing mountify standalone"
 else
-	echo "[+] mountify is installed, proceed!"
+	echo "[+] mountify is installed!"
+	echo "[+] removing standalone script!"
 	# remove standalone mounting script and config
 	rm -rf $MODPATH/post-fs-data.sh $MODPATH/config.sh > /dev/null 2>&1 
+	# add module to modules.txt
+	if grep -qv "vendor_sepolicy" /data/adb/modules/mountify/modules.txt > /dev/null 2>&1 ; then
+		echo "vendor_sepolicy" >> /data/adb/modules/mountify/modules.txt
+	fi 
+	if grep -qv "vendor_sepolicy" /data/adb/modules_update/mountify/modules.txt > /dev/null 2>&1 ; then
+		 echo "vendor_sepolicy" >> /data/adb/modules_update/mountify/modules.txt
+	fi
 fi
 
 # skip mount
