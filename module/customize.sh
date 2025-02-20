@@ -4,6 +4,8 @@ PATH=/data/adb/ap/bin:/data/adb/ksu/bin:/data/adb/magisk:$PATH
 # require mountify
 if [ ! -f /data/adb/modules/mountify/config.sh ] && [ ! -f /data/adb/modules_update/mountify/config.sh ]; then
 	abort "[!] mountify is required for this module!"
+else
+	echo "[+] mountify is installed, proceed!"
 fi
 
 # skip mount
@@ -26,6 +28,12 @@ if grep -q "lineage" $vendor_sepolicy >/dev/null 2>&1; then
 	# prep file for boot-complete mount
 	mkdir -p "$MODPATH/latemount/system/vendor/etc/selinux"
 	grep -v "lineage" $vendor_sepolicy > "$MODPATH/latemount$vendor_sepolicy"	
+elif  grep -q "lineage" "/data/adb/modules/vendor_sepolicy/$vendor_sepolicy" >/dev/null 2>&1; then
+	echo "[+] creating vendor_sepolicy.cil from old installation"
+	mkdir -p "$MODPATH/system/vendor/etc/selinux"
+	cat "/data/adb/modules/vendor_sepolicy/$vendor_sepolicy" > "$MODPATH$vendor_sepolicy"
+	mkdir -p "$MODPATH/latemount/system/vendor/etc/selinux"
+	grep -v lineage "/data/adb/modules/vendor_sepolicy/latemount/$vendor_sepolicy" > "$MODPATH/latemount$vendor_sepolicy"
 else
 	echo "[!] skipping vendor_sepolicy.cil as lineage was not found"
 fi
@@ -40,6 +48,14 @@ if grep -q "lineage" $compatibility_matrix >/dev/null 2>&1; then
 	# prep file for boot-complete mount
 	mkdir -p "$MODPATH/latemount/system/etc/vintf"
 	grep -v lineage $compatibility_matrix > "$MODPATH/latemount$compatibility_matrix"
+elif grep -q "lineage" "/data/adb/modules/vendor_sepolicy/$compatibility_matrix" >/dev/null 2>&1; then
+	echo "[+] creating compatibility_matrix.device.xml from old installation"
+	# original
+	mkdir -p "$MODPATH/system/etc/vintf"
+	cat "/data/adb/modules/vendor_sepolicy/$compatibility_matrix" > "$MODPATH$compatibility_matrix"
+	# prep file for boot-complete mount
+	mkdir -p "$MODPATH/latemount/system/etc/vintf"
+	grep -v lineage "/data/adb/modules/vendor_sepolicy/latemount$compatibility_matrix" > "$MODPATH/latemount$compatibility_matrix"
 else
 	echo "[!] skipping compatibility_matrix.device.xml as lineage was not found"
 fi
