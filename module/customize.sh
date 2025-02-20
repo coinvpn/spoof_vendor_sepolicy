@@ -1,11 +1,53 @@
 #!/bin/sh
+# customize.sh
+# vendor_sepolicy
+# demo module to showcase mountify
+# No warranty.
+# No rights reserved.
+# This is free software; you can redistribute it and/or modify it under the terms of The Unlicense.
 PATH=/data/adb/ap/bin:/data/adb/ksu/bin:/data/adb/magisk:$PATH
 
-# require mountify
+# theres reports that it bootloops on certain devices
+if getprop ro.product.name | grep -q 'vermeer' ; then
+	abort "[!] Installation aborted as device \"vermeer\" is not supported"
+fi
+
+# routine start
+mountify_sysreq() {
+	echo "[+] mountify"
+	echo "[+] SysReq test"
+
+	# test for overlayfs
+	if grep -q "overlay" /proc/filesystems > /dev/null 2>&1; then \
+		echo "[+] CONFIG_OVERLAY_FS"
+		echo "[+] overlay found in /proc/filesystems"
+	else
+		abort "[!] CONFIG_OVERLAY_FS is required for this module!"
+	fi
+
+	# test for tmpfs xattr
+	[ -w /mnt ] && MNT_FOLDER=/mnt
+	[ -w /mnt/vendor ] && MNT_FOLDER=/mnt/vendor
+	testfile="$MNT_FOLDER/tmpfs_xattr_testfile"
+	rm $testfile > /dev/null 2>&1 
+	busybox mknod "$testfile" c 0 0 > /dev/null 2>&1 
+	if busybox setfattr -n trusted.overlay.whiteout -v y "$testfile" > /dev/null 2>&1 ; then 
+		echo "[+] CONFIG_TMPFS_XATTR"
+		echo "[+] tmpfs extended attribute test passed"
+		rm $testfile > /dev/null 2>&1 
+	else
+		rm $testfile > /dev/null 2>&1 
+		abort "[!] CONFIG_TMPFS_XATTR is required for this module!"
+	fi
+}
+
+# require mountify compat
 if [ ! -f /data/adb/modules/mountify/config.sh ] && [ ! -f /data/adb/modules_update/mountify/config.sh ]; then
-	abort "[!] mountify is required for this module!"
+	mountify_sysreq
 else
 	echo "[+] mountify is installed, proceed!"
+	# remove standalone mounting script and config
+	rm -rf $MODPATH/post-fs-data.sh $MODPATH/config.sh > /dev/null 2>&1 
 fi
 
 # skip mount
