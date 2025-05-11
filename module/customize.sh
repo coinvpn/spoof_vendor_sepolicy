@@ -138,4 +138,27 @@ fi
 # generate random bytes from /dev/urandom
 echo "# $(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c $dummy_bytes )" >> "$MODPATH/system/bin/service"
 
+echo "[+] creating filtered /system/bin/dumpsys"
+# copy dumpsys bindary
+cp -f /system/bin/dumpsys "$MODPATH/system/bin/dumpsys.orig"
+if [ -f /system/bin/dumpsys.orig ]; then
+	cp -f /system/bin/dumpsys.orig "$MODPATH/system/bin/dumpsys.orig"	
+fi
+service_perm "$MODPATH/system/bin/dumpsys.orig"
+
+# replace with a script that filters its output
+echo "IyEvYmluL3NoCi9zeXN0ZW0vYmluL2R1bXBzeXMub3JpZyAiJEAiIHwgc2VkICdzL2xpbmVhZ2UvL2c7IHMvTGluZWFnZS8vZycK" | base64 -d > "$MODPATH/system/bin/dumpsys"
+service_perm "$MODPATH/system/bin/dumpsys"
+
+# try to copy its filesize
+SERVICE_ORIGINAL_SIZE=$(busybox stat -c%s "$MODPATH/system/bin/dumpsys.orig")
+FILTER_SCRIPT_SIZE=$(busybox stat -c%s "$MODPATH/system/bin/dumpsys")
+dummy_bytes=$(( SERVICE_ORIGINAL_SIZE - FILTER_SCRIPT_SIZE - 3 ))
+
+if [ $dummy_bytes -lt 1 ]; then
+	dummy_bytes=30000
+fi
+
+# generate random bytes from /dev/urandom
+echo "# $(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c $dummy_bytes )" >> "$MODPATH/system/bin/dumpsys"
 # EOF
