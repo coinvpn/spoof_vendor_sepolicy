@@ -89,6 +89,26 @@ else
 	echo "[!] skipping vendor_sepolicy.cil as lineage was not found"
 fi
 
+# plat_pub_versioned.cil
+plat_pub_versioned="/system/vendor/etc/selinux/plat_pub_versioned.cil"
+if grep -q "lineage" $plat_pub_versioned >/dev/null 2>&1; then
+	echo "[+] creating plat_pub_versioned.cil"
+	# original
+	mkdir -p "$MODPATH/system/vendor/etc/selinux"
+	cat $plat_pub_versioned > "$MODPATH$plat_pub_versioned"
+	# prep file for boot-complete mount
+	mkdir -p "$MODPATH/latemount/system/vendor/etc/selinux"
+	grep -v "lineage" $plat_pub_versioned > "$MODPATH/latemount$plat_pub_versioned"	
+elif  grep -q "lineage" "/data/adb/modules/vendor_sepolicy/$plat_pub_versioned" >/dev/null 2>&1; then
+	echo "[+] creating plat_pub_versioned.cil from old installation"
+	mkdir -p "$MODPATH/system/vendor/etc/selinux"
+	cat "/data/adb/modules/vendor_sepolicy/$plat_pub_versioned" > "$MODPATH$plat_pub_versioned"
+	mkdir -p "$MODPATH/latemount/system/vendor/etc/selinux"
+	grep -v lineage "/data/adb/modules/vendor_sepolicy/latemount/$plat_pub_versioned" > "$MODPATH/latemount$plat_pub_versioned"
+else
+	echo "[!] skipping plat_pub_versioned.cil as lineage was not found"
+fi
+
 # vendor_file_contexts
 vendor_file_contexts="/system/vendor/etc/selinux/vendor_file_contexts"
 if grep -q "lineage" $vendor_file_contexts >/dev/null 2>&1; then
