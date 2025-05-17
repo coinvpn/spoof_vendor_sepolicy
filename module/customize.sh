@@ -89,6 +89,26 @@ else
 	echo "[!] skipping vendor_sepolicy.cil as lineage was not found"
 fi
 
+# vendor_file_contexts
+vendor_file_contexts="/system/vendor/etc/selinux/vendor_file_contexts"
+if grep -q "lineage" $vendor_file_contexts >/dev/null 2>&1; then
+	echo "[+] creating vendor_file_contexts"
+	# original
+	mkdir -p "$MODPATH/system/vendor/etc/selinux"
+	cat $vendor_file_contexts > "$MODPATH$vendor_file_contexts"
+	# prep file for boot-complete mount
+	mkdir -p "$MODPATH/latemount/system/vendor/etc/selinux"
+	grep -v "lineage" $vendor_file_contexts > "$MODPATH/latemount$vendor_file_contexts"	
+elif  grep -q "lineage" "/data/adb/modules/vendor_sepolicy/$vendor_file_contexts" >/dev/null 2>&1; then
+	echo "[+] creating vendor_file_contexts from old installation"
+	mkdir -p "$MODPATH/system/vendor/etc/selinux"
+	cat "/data/adb/modules/vendor_sepolicy/$vendor_file_contexts" > "$MODPATH$vendor_file_contexts"
+	mkdir -p "$MODPATH/latemount/system/vendor/etc/selinux"
+	grep -v lineage "/data/adb/modules/vendor_sepolicy/latemount/$vendor_file_contexts" > "$MODPATH/latemount$vendor_file_contexts"
+else
+	echo "[!] skipping vendor_file_contexts as lineage was not found"
+fi
+
 # compatibility_matrix.device.xml
 compatibility_matrix="/system/etc/vintf/compatibility_matrix.device.xml"
 if grep -q "lineage" $compatibility_matrix >/dev/null 2>&1; then
