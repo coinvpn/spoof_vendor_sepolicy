@@ -163,7 +163,7 @@ fi
 service_perm "$MODPATH/system/bin/service.orig"
 
 # replace with a script that filters its output
-echo "IyEvYmluL3NoCi9zeXN0ZW0vYmluL3NlcnZpY2Uub3JpZyAiJEAiIHwgc2VkICdzL2xpbmVhZ2UvL2c7IHMvTGluZWFnZS8vZycK" | base64 -d > "$MODPATH/system/bin/service"
+echo "Iy9zeXN0ZW0vYmluL3NlcnZpY2Uub3JpZyAgfCBncmVwIC12IC1pIGxpbmVhZ2UK" | base64 -d > "$MODPATH/system/bin/service"
 service_perm "$MODPATH/system/bin/service"
 
 # try to copy its filesize
@@ -187,7 +187,7 @@ fi
 service_perm "$MODPATH/system/bin/dumpsys.orig"
 
 # replace with a script that filters its output
-echo "IyEvYmluL3NoCi9zeXN0ZW0vYmluL2R1bXBzeXMub3JpZyAiJEAiIHwgc2VkICdzL2xpbmVhZ2UvL2c7IHMvTGluZWFnZS8vZycK" | base64 -d > "$MODPATH/system/bin/dumpsys"
+echo "Iy9zeXN0ZW0vYmluL2R1bXBzeXMub3JpZyAgfCBncmVwIC12IC1pIGxpbmVhZ2UK" | base64 -d > "$MODPATH/system/bin/dumpsys"
 service_perm "$MODPATH/system/bin/dumpsys"
 
 # try to copy its filesize
