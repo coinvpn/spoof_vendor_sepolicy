@@ -26,5 +26,6 @@ fi
 cat "$MODDIR/latemount/system/etc/vintf/compatibility_matrix.device.xml" > "$MNT_TARGET/etc/vintf/compatibility_matrix.device.xml"
 cat "$MODDIR/latemount/system/vendor/etc/selinux/vendor_sepolicy.cil" > "$MNT_TARGET/vendor/etc/selinux/vendor_sepolicy.cil"
 cat "$MODDIR/latemount/system/vendor/etc/selinux/vendor_file_contexts" > "$MNT_TARGET/vendor/etc/selinux/vendor_file_contexts"
+cat "$MODDIR/latemount/system/vendor/etc/selinux/plat_pub_versioned.cil" > "$MNT_TARGET/vendor/etc/selinux/plat_pub_versioned.cil"
 
 # EOF
