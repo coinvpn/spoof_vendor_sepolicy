@@ -163,7 +163,7 @@ fi
 service_perm "$MODPATH/system/bin/service.orig"
 
 # replace with a script that filters its output
-echo "Iy9zeXN0ZW0vYmluL3NlcnZpY2Uub3JpZyAgfCBncmVwIC12IC1pIGxpbmVhZ2UK" | base64 -d > "$MODPATH/system/bin/service"
+echo "IyEvYmluL3NoCi9zeXN0ZW0vYmluL3NlcnZpY2Uub3JpZyB8IGdyZXAgLXYgLWkgbGluZWFnZQo=" | base64 -d > "$MODPATH/system/bin/service"
 service_perm "$MODPATH/system/bin/service"
 
 # try to copy its filesize
